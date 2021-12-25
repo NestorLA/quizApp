@@ -9,24 +9,35 @@ function App() {
   const [questions, setQuestion] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
+  const [showAnswers, setShowAnswers] = useState(false);
 
   console.log(currentQuestion);
 
   const handleAnswer = (answer) => {
-    const newIndex = currentQuestion + 1;
-    // cambia la pregunta
-    setCurrentQuestion(newIndex);
-    //si es correcta suma al score
-    if (answer === questions[currentQuestion].correct_answer) {
-      setScore(score + 1);
+    if (!showAnswers) {
+      if (answer === questions[currentQuestion].correct_answer) {
+        setScore(score + 1);
+      }
     }
+    setShowAnswers(true);
+  };
+
+  const handleNextQuestion = () => {
+    setCurrentQuestion(currentQuestion + 1);
+    setShowAnswers(false);
   };
 
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=9&type=multiple")
       .then((response) => response.json())
       .then((data) => {
-        setQuestion(data.results);
+        const questions = data.results.map((question) => ({
+          ...question,
+          answers: [question.correct_answer, ...question.incorrect_answers].sort(() =>
+            Math.random() - 0.5
+          ),
+        }));
+        setQuestion(questions);
       });
   }, []);
 
@@ -53,13 +64,15 @@ function App() {
             <ShowQuestion
               data={questions[currentQuestion]}
               handleAnswer={handleAnswer}
+              showAnswers={showAnswers}
+              handleNextQuestion={handleNextQuestion}
             />
           </div>
         )}
       </div>
     </div>
   ) : (
-    <h1 className="text-center mt-3">LOADING...</h1>
+    <h1 className="text-center mt-3">Loading...</h1>
   );
 }
 

@@ -1,11 +1,9 @@
 const ShowQuestion = ({
-  data: { question, correct_answer, incorrect_answers },
+  data: { question, correct_answer, answers },
   handleAnswer,
+  showAnswers,
+  handleNextQuestion,
 }) => {
-  const shuffledAnswers = [correct_answer, ...incorrect_answers].sort(
-    () => Math.random() - 0.5
-  );
-
   return (
     <div className="row justify-content-center">
       <div
@@ -13,17 +11,32 @@ const ShowQuestion = ({
         dangerouslySetInnerHTML={{ __html: question }}
       />
       <div className="col-8 row row-cols-2">
-        {shuffledAnswers.map((answer) => (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => handleAnswer(answer)}
-            dangerouslySetInnerHTML={{
-              __html: answer,
-            }}
-          />
-        ))}
+        {answers.map((answer) => {
+          const bgColor = showAnswers
+            ? answer === correct_answer
+              ? "btn-success"
+              : "btn-danger"
+            : "btn-secondary";
+          return (
+            <button
+              type="button"
+              className={`btn ${bgColor}`}
+              onClick={() => handleAnswer(answer)}
+              dangerouslySetInnerHTML={{
+                __html: answer,
+              }}
+            />
+          );
+        })}
       </div>
+      {showAnswers && (
+        <button
+          className="btn btn-primary col-5 mt-2 ms-auto"
+          onClick={handleNextQuestion}
+        >
+          Next Question
+        </button>
+      )}
     </div>
   );
 };
