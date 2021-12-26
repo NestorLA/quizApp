@@ -10,7 +10,7 @@ const ShowQuestion = ({
         className="fw-bold h6"
         dangerouslySetInnerHTML={{ __html: question }}
       />
-      <div className="col-8 row row-cols-2">
+      <div className="col-10 row row-cols-2">
         {answers.map((answer) => {
           const bgColor = showAnswers
             ? answer === correct_answer
@@ -31,7 +31,7 @@ const ShowQuestion = ({
       </div>
       {showAnswers && (
         <button
-          className="btn btn-primary col-5 mt-2 ms-auto"
+          className="btn btn-primary col-4 mt-2 ms-auto"
           onClick={handleNextQuestion}
         >
           Next Question
